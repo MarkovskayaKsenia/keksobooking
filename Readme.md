@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Любовь Марковская](https://up.htmlacademy.ru/javascript/14/user/399013).
-* Наставник: `Неизвестно`.
+* Наставник: [Артём Коновалов](https://up.htmlacademy.ru/javascript/14/user/297399).
 
 ---
 
