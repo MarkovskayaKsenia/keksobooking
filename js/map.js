@@ -137,6 +137,7 @@ var mapWindow = document.querySelector('.map');
 mapWindow.classList.remove('map--faded');
 
 // Находим место для вставки карточки и шаблон
+var map = document.querySelector('.map');
 var cardPlace = document.querySelector('.map__filters-container');
 var cardTemplate = document.querySelector('template')
   .content
@@ -169,15 +170,12 @@ var localizeType = function (type) {
 
 // Функция для отрисовки одного объявления.
 var renderCard = function (card) {
-  // обертка div для карточки, чтобы вытащить innerHTML
-  var overlay = document.createElement('div');
-
   var cardElement = cardTemplate.cloneNode(true);
   cardElement.querySelector('.popup__avatar').setAttribute('src', card.author.avatar);
   cardElement.querySelector('.popup__title').textContent = card.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = card.offer.addres;
   cardElement.querySelector('.popup__text--price').textContent = card.offer.price;
-  cardElement.querySelector('.popup__text--price').insertAdjacentHTML('beforeend', ' &#x20bd;<span>/ночь</span>');
+  cardElement.querySelector('.popup__text--price').insertAdjacentHTML('beforeend', '&#x20bd;<span>/ночь</span>');
   cardElement.querySelector('.popup__type').textContent = localizeType(card.offer.type);
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
 
@@ -201,12 +199,11 @@ var renderCard = function (card) {
     photoBlock.appendChild(newPhoto);
   }
 
-  overlay.appendChild(cardElement);
-  return overlay.innerHTML;
+  return cardElement;
 };
 
-// Вставляем карту перед указанным блоком
-cardPlace.insertAdjacentHTML('beforebegin', renderCard(adList[0]));
+// // Вставляем карту перед указанным блоком
+map.insertBefore(renderCard(adList[0]), cardPlace);
 
 // // Находим место для вставки пинов и шаблон
 var pinsPlace = document.querySelector('.map__pins');
