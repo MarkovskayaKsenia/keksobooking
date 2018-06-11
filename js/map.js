@@ -144,26 +144,18 @@ var removeChildren = function (list) {
 
 // Функция для перевода типа апартаментов
 var localizeType = function (type) {
-  var localType = '';
   switch (type) {
-    case 'flat' : localType = 'Квартира';
-      break;
-    case 'bungalo' : localType = 'Бунгало';
-      break;
-    case 'house' : localType = 'Дом';
-      break;
-    case 'palace' : localType = 'Дворец';
-      break;
-    default : localType = 'Хибарка';
+    case 'flat' : return 'Квартира';
+    case 'bungalo' : return 'Бунгало';
+    case 'house' : return 'Дом';
+    default : return 'Дворец';
   }
-
-  return localType;
 };
 
 // Функция для отрисовки одного объявления.
 var renderCard = function (card) {
   var cardElement = cardTemplate.cloneNode(true);
-  cardElement.querySelector('.popup__avatar').setAttribute('src', card.author.avatar);
+  cardElement.querySelector('.popup__avatar').src = card.author.avatar;;
   cardElement.querySelector('.popup__title').textContent = card.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = card.offer.addres;
   cardElement.querySelector('.popup__text--price').textContent = card.offer.price;
@@ -206,9 +198,10 @@ var pinTemplate = document.querySelector('template')
 // Функция для отрисовки пина
 var renderPin = function (pin) {
   var pinElement = pinTemplate.cloneNode(true);
+  var pinAvatar = pinElement.querySelector('img');
   pinElement.style = 'left: ' + pin.location.x + 'px; top: ' + pin.location.y + 'px;';
-  pinElement.querySelector('img').src = pin.author.avatar;
-  pinElement.querySelector('img').alt = pin.offer.title;
+  pinAvatar.src = pin.author.avatar;
+  pinAvatar.alt = pin.offer.title;
 
   return pinElement;
 };
