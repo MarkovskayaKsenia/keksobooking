@@ -155,7 +155,7 @@ var localizeType = function (type) {
 // Функция для отрисовки одного объявления.
 var renderCard = function (card) {
   var cardElement = cardTemplate.cloneNode(true);
-  cardElement.querySelector('.popup__avatar').src = card.author.avatar;;
+  cardElement.querySelector('.popup__avatar').src = card.author.avatar;
   cardElement.querySelector('.popup__title').textContent = card.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = card.offer.addres;
   cardElement.querySelector('.popup__text--price').textContent = card.offer.price;
