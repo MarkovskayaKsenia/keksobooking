@@ -55,10 +55,7 @@ var PIN_HEIGHT = 40;
 
 // Функция для возвращения нового перемешанного массива
 var randomMixArray = function (arr) {
-  var newArr = [];
-  for (var i = 0; i < arr.length; i++) {
-    newArr[i] = arr [i];
-  }
+  var newArr = arr.slice(0);
 
   newArr.sort(function () {
     return 0.5 - Math.random();
@@ -69,11 +66,6 @@ var randomMixArray = function (arr) {
 // Функция для генерации случайных чисел в интервале
 var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-// Функция для вывода случайного элемента из массива
-var getRandomFromArray = function (arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
 };
 
 // Функция для генерации массива произвольной длины из другого массива
@@ -110,7 +102,7 @@ var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, mi
     ad.offer.title = mixedTitles[i];
     ad.offer.addres = x + ', ' + y;
     ad.offer.price = getRandomInt(minPrice, maxPrice);
-    ad.offer.type = getRandomFromArray(types);
+    ad.offer.type = types[getRandomInt(0, types.length - 1)];
     ad.offer.rooms = getRandomInt(minRooms, maxRooms);
     ad.offer.guests = getRandomInt(minGuests, maxGuests);
     ad.offer.checkin = getRandomInt(minCheck, maxCheck) + ':00';
