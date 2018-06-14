@@ -52,6 +52,7 @@ var MAX_GUESTS = 10;
 
 var PIN_WIDTH = 40;
 var PIN_HEIGHT = 40;
+var MAIN_PIN_HEIGHT = 44;
 
 // Функция для возвращения нового перемешанного массива
 var randomMixArray = function (arr) {
@@ -85,6 +86,10 @@ var getPinY = function (y, pinHeight) {
   return y - pinHeight;
 };
 
+var getCoordsPin = function (x, y, pinWidth, pinHeight) {
+  return getPinX(x, pinWidth) + ', ' + getPinY(y, pinHeight);
+};
+
 // Функция для генерации массива объектов объявлений
 var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, minPrice, maxPrice, minRooms, maxRooms, minGuests, maxGuests, minCheck, maxCheck, features, photos, pinWidth, pinHeight) {
   var ads = [];
@@ -100,7 +105,7 @@ var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, mi
 
     ad.offer = {};
     ad.offer.title = mixedTitles[i];
-    ad.offer.addres = x + ', ' + y;
+    ad.offer.addres = getCoordsPin(x, y, PIN_WIDTH, PIN_HEIGHT);
     ad.offer.price = getRandomInt(minPrice, maxPrice);
     ad.offer.type = types[getRandomInt(0, types.length - 1)];
     ad.offer.rooms = getRandomInt(minRooms, maxRooms);
@@ -123,10 +128,6 @@ var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, mi
 
 // создаем массив объектов
 var adList = createAdList(QUANTITY, TITLES, TYPES, MIN_X, MIN_Y, MAX_X, MAX_Y, MIN_PRICE, MAX_PRICE, MIN_ROOMS, MAX_ROOMS, MIN_GUESTS, MAX_GUESTS, MIN_CHECK, MAX_CHECK, FEATURES, PHOTOS, PIN_WIDTH, PIN_HEIGHT);
-
-// Показываем блок .map
-var mapWindow = document.querySelector('.map');
-mapWindow.classList.remove('map--faded');
 
 // Находим место для вставки карточки и шаблон
 var map = document.querySelector('.map');
@@ -186,10 +187,10 @@ var renderCard = function (card) {
   return cardElement;
 };
 
-// // Вставляем карту перед указанным блоком
-map.insertBefore(renderCard(adList[0]), cardPlace);
+// Вставляем карту перед указанным блоком
+// map.insertBefore(adList[0], cardPlace);
 
-// // Находим место для вставки пинов и шаблон
+// Находим место для вставки пинов и шаблон
 var pinsPlace = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('template')
   .content
@@ -206,10 +207,57 @@ var renderPin = function (pin) {
   return pinElement;
 };
 
-// Создаем фрагмент, добавляем в него пины, добавляем его в DOM
-var fragment = document.createDocumentFragment();
+// Создаем фрагмент, добавляем в него пины
+var pinsFragment = document.createDocumentFragment();
 for (var i = 0; i < adList.length; i++) {
   var pin = renderPin(adList[i]);
-  fragment.appendChild(pin);
+  pinsFragment.appendChild(pin);
 }
-pinsPlace.appendChild(fragment);
+
+// Переменные и функции для disable
+var formFields = document.querySelectorAll('fieldset');
+var filterSelects = document.querySelectorAll('select');
+var disableForms = function () {
+  for (var j = 0; j < formFields.length; j++) {
+    formFields[j].setAttribute('disabled', 'true');
+  }
+  for (var k = 0; k < filterSelects.length; k++) {
+    filterSelects[k].setAttribute('disabled', 'true');
+  }
+};
+disableForms();
+var enableForms = function () {
+  for (var j = 0; j < formFields.length; j++) {
+    formFields[j].removeAttribute('disabled');
+  }
+  for (var k = 0; k < filterSelects.length; k++) {
+    filterSelects[k].removeAttribute('disabled');
+  }
+};
+
+// Переменные для активации карты
+var mainPin = document.querySelector('.map__pin--main');
+var mapWindow = document.querySelector('.map');
+var adForm = document.querySelector('.ad-form');
+var addresInput = document.querySelector('#address');
+addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, PIN_WIDTH, MAIN_PIN_HEIGHT / 2);
+
+// Функция для активации карты
+var mapActivate = function () {
+  enableForms();
+  mapWindow.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, PIN_WIDTH, MAIN_PIN_HEIGHT);
+  pinsPlace.appendChild(pinsFragment);
+};
+
+
+mainPin.addEventListener('mouseup', function () {
+  mapActivate();
+  var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  for (var j = 0; j < mapPins.length; j++) {
+    mapPins[j].addEventListener('click', function() {
+      // нужно как-то отрисовать сюда пины
+    });
+  }
+});
