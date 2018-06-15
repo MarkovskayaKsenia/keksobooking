@@ -2,7 +2,6 @@
 
 //  Константы
 var QUANTITY = 8;
-
 var TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -50,9 +49,10 @@ var MAX_CHECK = 14;
 var MIN_GUESTS = 0;
 var MAX_GUESTS = 10;
 
-var PIN_WIDTH = 40;
-var PIN_HEIGHT = 40;
-var MAIN_PIN_HEIGHT = 44;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_WIDTH = 65;
 
 // Функция для возвращения нового перемешанного массива
 var randomMixArray = function (arr) {
@@ -184,11 +184,18 @@ var renderCard = function (card) {
     photoBlock.appendChild(newPhoto);
   }
 
+  var buttonClose = cardElement.querySelector('.popup__close');
+  buttonClose.addEventListener('click', deleteCard);
   return cardElement;
 };
 
-// Вставляем карту перед указанным блоком
-// map.insertBefore(adList[0], cardPlace);
+// Функция для удаления объявления
+var deleteCard = function () {
+  var card = document.querySelector('.map__card');
+  if (card) {
+    card.remove();
+  }
+};
 
 // Находим место для вставки пинов и шаблон
 var pinsPlace = document.querySelector('.map__pins');
@@ -203,7 +210,10 @@ var renderPin = function (pin) {
   pinElement.style = 'left: ' + pin.location.x + 'px; top: ' + pin.location.y + 'px;';
   pinAvatar.src = pin.author.avatar;
   pinAvatar.alt = pin.offer.title;
-
+  pinElement.addEventListener('click', function () {
+    deleteCard();
+    map.insertBefore(renderCard(pin), cardPlace);
+  });
   return pinElement;
 };
 
@@ -240,24 +250,18 @@ var mainPin = document.querySelector('.map__pin--main');
 var mapWindow = document.querySelector('.map');
 var adForm = document.querySelector('.ad-form');
 var addresInput = document.querySelector('#address');
-addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, PIN_WIDTH, MAIN_PIN_HEIGHT / 2);
+addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT / 2);
 
 // Функция для активации карты
 var mapActivate = function () {
   enableForms();
   mapWindow.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, PIN_WIDTH, MAIN_PIN_HEIGHT);
+  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
   pinsPlace.appendChild(pinsFragment);
 };
 
 
 mainPin.addEventListener('mouseup', function () {
   mapActivate();
-  var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-  for (var j = 0; j < mapPins.length; j++) {
-    mapPins[j].addEventListener('click', function() {
-      // нужно как-то отрисовать сюда пины
-    });
-  }
 });
