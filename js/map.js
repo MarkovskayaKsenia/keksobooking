@@ -54,6 +54,10 @@ var PIN_HEIGHT = 70;
 var MAIN_PIN_HEIGHT = 65;
 var MAIN_PIN_WIDTH = 65;
 
+
+var ESC_CODE = 27;
+
+
 // Функция для возвращения нового перемешанного массива
 var randomMixArray = function (arr) {
   var newArr = arr.slice(0);
@@ -185,17 +189,24 @@ var renderCard = function (card) {
   }
 
   var buttonClose = cardElement.querySelector('.popup__close');
-  buttonClose.addEventListener('click', deleteCard);
+  buttonClose.addEventListener('click', closeCard);
+  map.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_CODE) {
+      closeCard();
+    }
+  });
+
   return cardElement;
 };
 
 // Функция для удаления объявления
-var deleteCard = function () {
+var closeCard = function () {
   var card = document.querySelector('.map__card');
   if (card) {
     card.remove();
   }
 };
+
 
 // Находим место для вставки пинов и шаблон
 var pinsPlace = document.querySelector('.map__pins');
@@ -211,7 +222,7 @@ var renderPin = function (pin) {
   pinAvatar.src = pin.author.avatar;
   pinAvatar.alt = pin.offer.title;
   pinElement.addEventListener('click', function () {
-    deleteCard();
+    closeCard();
     map.insertBefore(renderCard(pin), cardPlace);
   });
   return pinElement;
