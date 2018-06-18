@@ -322,7 +322,7 @@ var roomsMatch = function () {
   var roomValue = roomsSelect.value;
 
   for (var j = 0; j < options.length; j++) {
-    options[j].disabled;
+    options[j].setAttribute('disabled', 'true');
     options[j].removeAttribute('selected');
   }
 
