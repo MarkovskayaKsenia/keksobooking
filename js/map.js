@@ -2,7 +2,6 @@
 
 //  Константы
 var QUANTITY = 8;
-
 var TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -50,8 +49,14 @@ var MAX_CHECK = 14;
 var MIN_GUESTS = 0;
 var MAX_GUESTS = 10;
 
-var PIN_WIDTH = 40;
-var PIN_HEIGHT = 40;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_WIDTH = 65;
+
+
+var ESC_CODE = 27;
+
 
 // Функция для возвращения нового перемешанного массива
 var randomMixArray = function (arr) {
@@ -85,6 +90,10 @@ var getPinY = function (y, pinHeight) {
   return y - pinHeight;
 };
 
+var getCoordsPin = function (x, y, pinWidth, pinHeight) {
+  return getPinX(x, pinWidth) + ', ' + getPinY(y, pinHeight);
+};
+
 // Функция для генерации массива объектов объявлений
 var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, minPrice, maxPrice, minRooms, maxRooms, minGuests, maxGuests, minCheck, maxCheck, features, photos, pinWidth, pinHeight) {
   var ads = [];
@@ -100,7 +109,7 @@ var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, mi
 
     ad.offer = {};
     ad.offer.title = mixedTitles[i];
-    ad.offer.addres = x + ', ' + y;
+    ad.offer.addres = getCoordsPin(x, y, PIN_WIDTH, PIN_HEIGHT);
     ad.offer.price = getRandomInt(minPrice, maxPrice);
     ad.offer.type = types[getRandomInt(0, types.length - 1)];
     ad.offer.rooms = getRandomInt(minRooms, maxRooms);
@@ -123,10 +132,6 @@ var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, mi
 
 // создаем массив объектов
 var adList = createAdList(QUANTITY, TITLES, TYPES, MIN_X, MIN_Y, MAX_X, MAX_Y, MIN_PRICE, MAX_PRICE, MIN_ROOMS, MAX_ROOMS, MIN_GUESTS, MAX_GUESTS, MIN_CHECK, MAX_CHECK, FEATURES, PHOTOS, PIN_WIDTH, PIN_HEIGHT);
-
-// Показываем блок .map
-var mapWindow = document.querySelector('.map');
-mapWindow.classList.remove('map--faded');
 
 // Находим место для вставки карточки и шаблон
 var map = document.querySelector('.map');
@@ -183,13 +188,27 @@ var renderCard = function (card) {
     photoBlock.appendChild(newPhoto);
   }
 
+  var buttonClose = cardElement.querySelector('.popup__close');
+  buttonClose.addEventListener('click', closeCard);
+  map.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_CODE) {
+      closeCard();
+    }
+  });
+
   return cardElement;
 };
 
-// // Вставляем карту перед указанным блоком
-map.insertBefore(renderCard(adList[0]), cardPlace);
+// Функция для удаления объявления
+var closeCard = function () {
+  var card = document.querySelector('.map__card');
+  if (card) {
+    card.remove();
+  }
+};
 
-// // Находим место для вставки пинов и шаблон
+
+// Находим место для вставки пинов и шаблон
 var pinsPlace = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('template')
   .content
@@ -202,14 +221,58 @@ var renderPin = function (pin) {
   pinElement.style = 'left: ' + pin.location.x + 'px; top: ' + pin.location.y + 'px;';
   pinAvatar.src = pin.author.avatar;
   pinAvatar.alt = pin.offer.title;
-
+  pinElement.addEventListener('click', function () {
+    closeCard();
+    map.insertBefore(renderCard(pin), cardPlace);
+  });
   return pinElement;
 };
 
-// Создаем фрагмент, добавляем в него пины, добавляем его в DOM
-var fragment = document.createDocumentFragment();
+// Создаем фрагмент, добавляем в него пины
+var pinsFragment = document.createDocumentFragment();
 for (var i = 0; i < adList.length; i++) {
   var pin = renderPin(adList[i]);
-  fragment.appendChild(pin);
+  pinsFragment.appendChild(pin);
 }
-pinsPlace.appendChild(fragment);
+
+// Переменные и функции для disable
+var formFields = document.querySelectorAll('fieldset');
+var filterSelects = document.querySelectorAll('select');
+var disableForms = function () {
+  for (var j = 0; j < formFields.length; j++) {
+    formFields[j].setAttribute('disabled', 'true');
+  }
+  for (var k = 0; k < filterSelects.length; k++) {
+    filterSelects[k].setAttribute('disabled', 'true');
+  }
+};
+disableForms();
+var enableForms = function () {
+  for (var j = 0; j < formFields.length; j++) {
+    formFields[j].removeAttribute('disabled');
+  }
+  for (var k = 0; k < filterSelects.length; k++) {
+    filterSelects[k].removeAttribute('disabled');
+  }
+};
+
+// Переменные для активации карты
+var mainPin = document.querySelector('.map__pin--main');
+var mapWindow = document.querySelector('.map');
+var adForm = document.querySelector('.ad-form');
+var addresInput = document.querySelector('#address');
+addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT / 2);
+
+// Функция для активации карты
+var mapActivate = function () {
+  enableForms();
+  mapWindow.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
+  pinsPlace.appendChild(pinsFragment);
+};
+
+
+mainPin.addEventListener('mouseup', function () {
+  mapActivate();
+});
