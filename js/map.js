@@ -47,7 +47,7 @@ var MIN_CHECK = 12;
 var MAX_CHECK = 14;
 
 var MIN_GUESTS = 0;
-var MAX_GUESTS = 10;
+var MAX_GUESTS = 3;
 
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
@@ -126,7 +126,6 @@ var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, mi
 
     ads.push(ad);
   }
-
   return ads;
 };
 
@@ -207,7 +206,6 @@ var closeCard = function () {
   }
 };
 
-
 // Находим место для вставки пинов и шаблон
 var pinsPlace = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('template')
@@ -275,4 +273,92 @@ var mapActivate = function () {
 
 mainPin.addEventListener('mouseup', function () {
   mapActivate();
+});
+
+mapActivate();
+
+// Начинаем валидацию формы
+
+var typeSelect = adForm.querySelector('#type');
+var priceInput = adForm.querySelector('#price');
+var timeInSelect = adForm.querySelector('#timein');
+var timeOutSelect = adForm.querySelector('#timeout');
+var roomsSelect = adForm.querySelector('#room_number');
+var capacitySelect = adForm.querySelector('#capacity');
+
+
+// Функция выбора ценового диапазона
+var choosePrice = function () {
+  switch (typeSelect.value) {
+    case 'flat':
+      priceInput.min = '1000';
+      priceInput.placeholder = '1000';
+      break;
+    case 'house':
+      priceInput.min = '5000';
+      priceInput.placeholder = '5000';
+      break;
+    case 'palace':
+      priceInput.min = '10000';
+      priceInput.placeholder = '10000';
+      break;
+    default:
+      priceInput.min = '0';
+      priceInput.placeholder = '0';
+  }
+};
+
+// Функции для синхронизации времени заезда и выезда
+var timeInSync = function () {
+  timeOutSelect.value = timeInSelect.value;
+};
+var timeOutSync = function () {
+  timeInSelect.value = timeOutSelect.value;
+};
+
+// Функции для синхронизации количества гостей
+var roomsMatch = function () {
+  var options = capacitySelect.querySelectorAll('option');
+
+  var roomValue = roomsSelect.value;
+
+  for (var j = 0; j < options.length; j++) {
+    options[j].setAttribute('disabled', 'true');
+    options[j].removeAttribute('selected');
+  }
+
+  switch (roomValue) {
+    case '1' :
+      options[2].removeAttribute('disabled');
+      options[2].setAttribute('selected', 'true');
+      break;
+    case '2' :
+      options[2].removeAttribute('disabled');
+      options[1].removeAttribute('disabled');
+      options[1].setAttribute('selected', 'true');
+      break;
+    case '3' :
+      options[2].removeAttribute('disabled');
+      options[1].removeAttribute('disabled');
+      options[0].removeAttribute('disabled');
+      options[0].setAttribute('selected', 'true');
+      break;
+    default:
+      options[3].removeAttribute('disabled');
+      options[3].setAttribute('selected', 'true');
+      break;
+  }
+};
+
+typeSelect.addEventListener('change', function () {
+  choosePrice();
+});
+timeInSelect.addEventListener('change', function () {
+  timeInSync();
+});
+timeOutSelect.addEventListener('change', function () {
+  timeOutSync();
+});
+roomsSelect.addEventListener('change', function () {
+  roomsMatch();
 });
