@@ -311,7 +311,6 @@ var choosePrice = function (val) {
       priceInput.placeholder = '0';
   }
 };
-
 // Функции для синхронизации времени заезда и выезда
 var timeInSync = function () {
   timeOutSelect.value = timeInSelect.value;
@@ -323,14 +322,12 @@ var timeOutSync = function () {
 // Функции для синхронизации количества гостей
 var roomsMatch = function () {
   var options = capacitySelect.querySelectorAll('option');
-
   var roomValue = roomsSelect.value;
 
   for (var j = 0; j < options.length; j++) {
     options[j].setAttribute('disabled', 'true');
     options[j].removeAttribute('selected');
   }
-
   switch (roomValue) {
     case '1' :
       options[2].removeAttribute('disabled');
@@ -355,7 +352,7 @@ var roomsMatch = function () {
 };
 
 typeSelect.addEventListener('change', function () {
-  choosePrice();
+  choosePrice(typeSelect.value);
 });
 timeInSelect.addEventListener('change', function () {
   timeInSync();
