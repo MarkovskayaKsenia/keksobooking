@@ -312,37 +312,36 @@ var choosePrice = function (val) {
   }
 };
 // Функции для синхронизации времени заезда и выезда
-var timeInSync = function () {
-  timeOutSelect.value = timeInSelect.value;
+var timeInSync = function (val) {
+  timeOutSelect.value = val;
 };
-var timeOutSync = function () {
-  timeInSelect.value = timeOutSelect.value;
+var timeOutSync = function (val) {
+  timeInSelect.value = val;
 };
 
 // Функции для синхронизации количества гостей
-var roomsMatch = function () {
+var roomsMatch = function (val) {
   var options = capacitySelect.querySelectorAll('option');
-  var roomValue = roomsSelect.value;
 
   for (var j = 0; j < options.length; j++) {
     options[j].setAttribute('disabled', 'true');
     options[j].removeAttribute('selected');
   }
-  switch (roomValue) {
+  switch (val) {
     case '1' :
       options[2].removeAttribute('disabled');
-      capacitySelect.value = roomValue;
+      capacitySelect.value = val;
       break;
     case '2' :
       options[2].removeAttribute('disabled');
       options[1].removeAttribute('disabled');
-      capacitySelect.value = roomValue;
+      capacitySelect.value = val;
       break;
     case '3' :
       options[2].removeAttribute('disabled');
       options[1].removeAttribute('disabled');
       options[0].removeAttribute('disabled');
-      capacitySelect.value = roomValue;
+      capacitySelect.value = val;
       break;
     default:
       options[3].removeAttribute('disabled');
@@ -351,17 +350,17 @@ var roomsMatch = function () {
   }
 };
 
-typeSelect.addEventListener('change', function () {
-  choosePrice(typeSelect.value);
+typeSelect.addEventListener('change', function (evt) {
+  choosePrice(evt.target.value);
 });
-timeInSelect.addEventListener('change', function () {
-  timeInSync();
+timeInSelect.addEventListener('change', function (evt) {
+  timeInSync(evt.target.value);
 });
-timeOutSelect.addEventListener('change', function () {
-  timeOutSync();
+timeOutSelect.addEventListener('change', function (evt) {
+  timeOutSync(evt.target.value);
 });
-roomsSelect.addEventListener('change', function () {
-  roomsMatch();
+roomsSelect.addEventListener('change', function (evt) {
+  roomsMatch(evt.target.value);
 });
 adForm.addEventListener('reset', function () {
   setTimeout(setMainPinDefault, 50);
