@@ -261,12 +261,19 @@ var adForm = document.querySelector('.ad-form');
 var addresInput = adForm.querySelector('#address');
 addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT / 2);
 
+// функция установки главной метки в исходное значение
+var setMainPinDefault = function () {
+  mainPin.style.left = '570';
+  mainPin.style.top = '375';
+  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
+};
+
 // Функция для активации карты
 var mapActivate = function () {
   enableForms();
   mapWindow.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
+  setMainPinDefault();
   pinsPlace.appendChild(pinsFragment);
 };
 
@@ -283,12 +290,10 @@ var timeInSelect = adForm.querySelector('#timein');
 var timeOutSelect = adForm.querySelector('#timeout');
 var roomsSelect = adForm.querySelector('#room_number');
 var capacitySelect = adForm.querySelector('#capacity');
-var adFormResetButtom = adForm.querySelector('.ad-form__reset');
-
 
 // Функция выбора ценового диапазона
-var choosePrice = function () {
-  switch (typeSelect.value) {
+var choosePrice = function (val) {
+  switch (val) {
     case 'flat':
       priceInput.min = '1000';
       priceInput.placeholder = '1000';
@@ -349,20 +354,6 @@ var roomsMatch = function () {
   }
 };
 
-
-// Функция для сброса параметров
-var resetAdForm = function () {
-  typeSelect.value = 'bungalo';
-  priceInput.value = '';
-  priceInput.placeholder = '0';
-  roomsSelect.value = '1';
-  roomsMatch();
-  mainPin.style = 'left: 570px; top: 375px';
-  addresInput.setAttribute('value', getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT));
-  // addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
-  // Стирал значение и не записывал ничего, хотя в консоли выводил корректную строку, не знаешь почему?
-};
-
 typeSelect.addEventListener('change', function () {
   choosePrice();
 });
@@ -375,6 +366,6 @@ timeOutSelect.addEventListener('change', function () {
 roomsSelect.addEventListener('change', function () {
   roomsMatch();
 });
-adFormResetButtom.addEventListener('click', function () {
-  resetAdForm();
+adForm.addEventListener('reset', function () {
+  setTimeout(setMainPinDefault, 50);
 });
