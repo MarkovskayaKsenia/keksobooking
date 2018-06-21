@@ -53,7 +53,14 @@ var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 var MAIN_PIN_HEIGHT = 65;
 var MAIN_PIN_WIDTH = 65;
-
+var MAIN_PIN_DEFAULT_LEFT = 570;
+var MAIN_PIN_DEFAULT_TOP = 375;
+var mapWorkspace = {
+  startX: 0,
+  startY: 130,
+  endX: 1200,
+  endY: 630
+};
 
 var ESC_CODE = 27;
 
@@ -89,7 +96,6 @@ var getPinX = function (x, pinWidth) {
 var getPinY = function (y, pinHeight) {
   return y - pinHeight;
 };
-
 var getCoordsPin = function (x, y, pinWidth, pinHeight) {
   return getPinX(x, pinWidth) + ', ' + getPinY(y, pinHeight);
 };
@@ -261,10 +267,19 @@ var adForm = document.querySelector('.ad-form');
 var addresInput = adForm.querySelector('#address');
 addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT / 2);
 
+// Функция для проверки активности карты
+var checkMapActive = function () {
+  if (mapWindow.classList.contains('map--faded')) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 // функция установки главной метки в исходное значение
 var setMainPinDefault = function () {
-  mainPin.style.left = '570';
-  mainPin.style.top = '375';
+  mainPin.style.left = MAIN_PIN_DEFAULT_LEFT + 'px';
+  mainPin.style.top = MAIN_PIN_DEFAULT_TOP + 'px';
   addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
 };
 
@@ -273,13 +288,62 @@ var mapActivate = function () {
   enableForms();
   mapWindow.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  setMainPinDefault();
   pinsPlace.appendChild(pinsFragment);
 };
 
+mainPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
 
-mainPin.addEventListener('mouseup', function () {
-  mapActivate();
+  var onMouseMove = function (moveEvt) {
+
+
+    moveEvt.preventDefault();
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    var currentCoords = {
+      x: mainPin.offsetLeft - shift.x,
+      y: mainPin.offsetTop - shift.y
+    };
+
+    if (currentCoords.x < mapWorkspace.startX) {
+      currentCoords.x = mapWorkspace.startX;
+    } else if (currentCoords.x > (mapWorkspace.endX - MAIN_PIN_WIDTH)) {
+      currentCoords.x = mapWorkspace.endX - MAIN_PIN_WIDTH;
+    }
+    if (currentCoords.y < mapWorkspace.startY + MAIN_PIN_HEIGHT) {
+      currentCoords.y = mapWorkspace.startY + MAIN_PIN_HEIGHT;
+    } else if (currentCoords.y > mapWorkspace.endY + MAIN_PIN_HEIGHT) {
+      currentCoords.y = mapWorkspace.endY + MAIN_PIN_HEIGHT;
+    }
+
+    mainPin.style.left = currentCoords.x + 'px';
+    mainPin.style.top = currentCoords.y + 'px';
+    addresInput.value = getCoordsPin(currentCoords.x, currentCoords.y, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
+  };
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    if (!checkMapActive()) {
+      mapActivate();
+    }
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
 });
 
 // Начинаем валидацию формы
