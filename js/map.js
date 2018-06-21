@@ -321,10 +321,10 @@ mainPin.addEventListener('mousedown', function (evt) {
     } else if (currentCoords.x > (mapWorkspace.endX - MAIN_PIN_WIDTH)) {
       currentCoords.x = mapWorkspace.endX - MAIN_PIN_WIDTH;
     }
-    if (currentCoords.y < mapWorkspace.startY + MAIN_PIN_HEIGHT) {
-      currentCoords.y = mapWorkspace.startY + MAIN_PIN_HEIGHT;
-    } else if (currentCoords.y > mapWorkspace.endY + MAIN_PIN_HEIGHT) {
-      currentCoords.y = mapWorkspace.endY + MAIN_PIN_HEIGHT;
+    if (currentCoords.y < mapWorkspace.startY) {
+      currentCoords.y = mapWorkspace.startY;
+    } else if (currentCoords.y > mapWorkspace.endY) {
+      currentCoords.y = mapWorkspace.endY;
     }
 
     mainPin.style.left = currentCoords.x + 'px';
