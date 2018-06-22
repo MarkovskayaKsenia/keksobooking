@@ -53,6 +53,7 @@ var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 var MAIN_PIN_HEIGHT = 65;
 var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_TALE = 22;
 var MAIN_PIN_DEFAULT_LEFT = 570;
 var MAIN_PIN_DEFAULT_TOP = 375;
 var mapWorkspace = {
@@ -269,18 +270,14 @@ addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN
 
 // Функция для проверки активности карты
 var checkMapActive = function () {
-  if (mapWindow.classList.contains('map--faded')) {
-    return false;
-  } else {
-    return true;
-  }
+  return !mapWindow.classList.contains('map--faded');
 };
 
 // функция установки главной метки в исходное значение
 var setMainPinDefault = function () {
   mainPin.style.left = MAIN_PIN_DEFAULT_LEFT + 'px';
   mainPin.style.top = MAIN_PIN_DEFAULT_TOP + 'px';
-  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
+  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT + MAIN_PIN_TALE);
 };
 
 // Функция для активации карты
@@ -300,7 +297,6 @@ mainPin.addEventListener('mousedown', function (evt) {
 
   var onMouseMove = function (moveEvt) {
 
-
     moveEvt.preventDefault();
     var shift = {
       x: startCoords.x - moveEvt.clientX,
@@ -311,25 +307,24 @@ mainPin.addEventListener('mousedown', function (evt) {
       y: moveEvt.clientY
     };
 
+    var limitMainPinMove = function (left, top) {
+      if ((left < 0) || (top < mapWorkspace.startY) || (left + MAIN_PIN_WIDTH > mapWorkspace.endX) || (top + MAIN_PIN_HEIGHT + MAIN_PIN_TALE > mapWorkspace.endY)) {
+        return true;
+      }
+      return false;
+    };
+
+    if (limitMainPinMove(mainPin.offsetLeft - shift.x, mainPin.offsetTop - shift.y)) {
+      return;
+    }
     var currentCoords = {
       x: mainPin.offsetLeft - shift.x,
       y: mainPin.offsetTop - shift.y
     };
 
-    if (currentCoords.x < mapWorkspace.startX) {
-      currentCoords.x = mapWorkspace.startX;
-    } else if (currentCoords.x > (mapWorkspace.endX - MAIN_PIN_WIDTH)) {
-      currentCoords.x = mapWorkspace.endX - MAIN_PIN_WIDTH;
-    }
-    if (currentCoords.y < mapWorkspace.startY) {
-      currentCoords.y = mapWorkspace.startY;
-    } else if (currentCoords.y > mapWorkspace.endY) {
-      currentCoords.y = mapWorkspace.endY;
-    }
-
     mainPin.style.left = currentCoords.x + 'px';
     mainPin.style.top = currentCoords.y + 'px';
-    addresInput.value = getCoordsPin(currentCoords.x, currentCoords.y, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
+    addresInput.value = getCoordsPin(currentCoords.x, currentCoords.y, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT + MAIN_PIN_TALE);
   };
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
@@ -337,11 +332,13 @@ mainPin.addEventListener('mousedown', function (evt) {
     if (!checkMapActive()) {
       mapActivate();
     }
+    mapWindow.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   };
 
-  document.addEventListener('mousemove', onMouseMove);
+  mapWindow.addEventListener('mousemove', onMouseMove);
+  mapWindow.addEventListener('mouseup', onMouseUp);
   document.addEventListener('mouseup', onMouseUp);
 
 });
