@@ -53,7 +53,7 @@ var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 var MAIN_PIN_HEIGHT = 65;
 var MAIN_PIN_WIDTH = 65;
-var MAIN_PIN_TALE = 22;
+var MAIN_PIN_TALE = 21;
 var MAIN_PIN_DEFAULT_LEFT = 570;
 var MAIN_PIN_DEFAULT_TOP = 375;
 
@@ -284,6 +284,18 @@ var mapActivate = function () {
   pinsPlace.appendChild(pinsFragment);
 };
 
+var widthMap = mapWindow.offsetWidth;
+var minLeftPin = 0;
+var maxLeftPin = widthMap - MAIN_PIN_WIDTH;
+var minTopPin = MIN_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
+var maxTopPin = MAX_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
+var limitMainPinMove = function (left, top) {
+  if((left < minLeftPin) || (left > maxLeftPin) || (top < minTopPin) || (top > maxTopPin)) {
+    return true;
+  }
+  return false;
+};
+
 mainPin.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
   var startCoords = {
@@ -297,36 +309,21 @@ mainPin.addEventListener('mousedown', function (evt) {
       x: startCoords.x - moveEvt.pageX,
       y: startCoords.y - moveEvt.pageY
     };
+
+
+    if (limitMainPinMove(mainPin.offsetLeft - shift.x, mainPin.offsetTop - shift.y)) {
+      return;
+    }
     startCoords = {
       x: moveEvt.pageX,
       y: moveEvt.pageY
     };
 
-    var widthMap = mapWindow.offsetWidth;
-    var minLeftPin = 0;
-    var maxLeftPin = widthMap - MAIN_PIN_WIDTH;
-    var minTopPin = MIN_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
-    var maxTopPin = MAX_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
+
     var top = mainPin.offsetTop - shift.y;
     var left = mainPin.offsetLeft - shift.x;
-    if (top <= (minTopPin)) {
-      mainPin.style.top = minTopPin + 'px';
-      mainPin.style.left = left + 'px';
-    } else if (top >= maxTopPin) {
-      mainPin.style.top = maxTopPin + 'px';
-      mainPin.style.left = left + 'px';
-      startCoords.y = maxTopPin;
-    } else {
-      mainPin.style.top = top + 'px';
-      mainPin.style.left = left + 'px';
-    }
-    if (left < minLeftPin) {
-      mainPin.style.left = minLeftPin + 'px';
-    } else if (left > maxLeftPin) {
-      mainPin.style.left = maxLeftPin + 'px';
-    } else {
-      mainPin.style.left = left + 'px';
-    }
+    mainPin.style.top = top + 'px';
+    mainPin.style.left = left + 'px';
 
     addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT + MAIN_PIN_TALE);
   };
