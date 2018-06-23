@@ -290,7 +290,7 @@ var maxLeftPin = widthMap - MAIN_PIN_WIDTH;
 var minTopPin = MIN_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
 var maxTopPin = MAX_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
 var limitMainPinMove = function (left, top) {
-  if((left < minLeftPin) || (left > maxLeftPin) || (top < minTopPin) || (top > maxTopPin)) {
+  if ((left < minLeftPin) || (left > maxLeftPin) || (top < minTopPin) || (top > maxTopPin)) {
     return true;
   }
   return false;
