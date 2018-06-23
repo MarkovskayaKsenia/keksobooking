@@ -56,12 +56,6 @@ var MAIN_PIN_WIDTH = 65;
 var MAIN_PIN_TALE = 22;
 var MAIN_PIN_DEFAULT_LEFT = 570;
 var MAIN_PIN_DEFAULT_TOP = 375;
-var mapWorkspace = {
-  startX: 0,
-  startY: 130,
-  endX: 1200,
-  endY: 630
-};
 
 var ESC_CODE = 27;
 
@@ -92,14 +86,15 @@ var getRandomArrLength = function (arr) {
 
 // Функции для определения положения метки
 var getPinX = function (x, pinWidth) {
-  return x - pinWidth / 2;
+  return x + pinWidth / 2;
 };
 var getPinY = function (y, pinHeight) {
-  return y - pinHeight;
+  return y + pinHeight;
 };
 var getCoordsPin = function (x, y, pinWidth, pinHeight) {
   return getPinX(x, pinWidth) + ', ' + getPinY(y, pinHeight);
 };
+
 
 // Функция для генерации массива объектов объявлений
 var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, minPrice, maxPrice, minRooms, maxRooms, minGuests, maxGuests, minCheck, maxCheck, features, photos, pinWidth, pinHeight) {
@@ -283,6 +278,7 @@ var setMainPinDefault = function () {
 // Функция для активации карты
 var mapActivate = function () {
   enableForms();
+  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT + MAIN_PIN_TALE);
   mapWindow.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   pinsPlace.appendChild(pinsFragment);
@@ -291,56 +287,61 @@ var mapActivate = function () {
 mainPin.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
   var startCoords = {
-    x: evt.clientX,
-    y: evt.clientY
+    x: evt.pageX,
+    y: evt.pageY
   };
 
   var onMouseMove = function (moveEvt) {
-
     moveEvt.preventDefault();
     var shift = {
-      x: startCoords.x - moveEvt.clientX,
-      y: startCoords.y - moveEvt.clientY
+      x: startCoords.x - moveEvt.pageX,
+      y: startCoords.y - moveEvt.pageY
     };
     startCoords = {
-      x: moveEvt.clientX,
-      y: moveEvt.clientY
+      x: moveEvt.pageX,
+      y: moveEvt.pageY
     };
 
-    var limitMainPinMove = function (left, top) {
-      if ((left < 0) || (top < mapWorkspace.startY) || (left + MAIN_PIN_WIDTH > mapWorkspace.endX) || (top + MAIN_PIN_HEIGHT + MAIN_PIN_TALE > mapWorkspace.endY)) {
-        return true;
-      }
-      return false;
-    };
-
-    if (limitMainPinMove(mainPin.offsetLeft - shift.x, mainPin.offsetTop - shift.y)) {
-      return;
+    var widthMap = mapWindow.offsetWidth;
+    var minLeftPin = 0;
+    var maxLeftPin = widthMap - MAIN_PIN_WIDTH;
+    var minTopPin = MIN_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
+    var maxTopPin = MAX_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
+    var top = mainPin.offsetTop - shift.y;
+    var left = mainPin.offsetLeft - shift.x;
+    if (top <= (minTopPin)) {
+      mainPin.style.top = minTopPin + 'px';
+      mainPin.style.left = left + 'px';
+    } else if (top >= maxTopPin) {
+      mainPin.style.top = maxTopPin + 'px';
+      mainPin.style.left = left + 'px';
+      startCoords.y = maxTopPin;
+    } else {
+      mainPin.style.top = top + 'px';
+      mainPin.style.left = left + 'px';
     }
-    var currentCoords = {
-      x: mainPin.offsetLeft - shift.x,
-      y: mainPin.offsetTop - shift.y
-    };
+    if (left < minLeftPin) {
+      mainPin.style.left = minLeftPin + 'px';
+    } else if (left > maxLeftPin) {
+      mainPin.style.left = maxLeftPin + 'px';
+    } else {
+      mainPin.style.left = left + 'px';
+    }
 
-    mainPin.style.left = currentCoords.x + 'px';
-    mainPin.style.top = currentCoords.y + 'px';
-    addresInput.value = getCoordsPin(currentCoords.x, currentCoords.y, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT + MAIN_PIN_TALE);
+    addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT + MAIN_PIN_TALE);
   };
+
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
-
     if (!checkMapActive()) {
       mapActivate();
     }
     mapWindow.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
+    mapWindow.removeEventListener('mouseup', onMouseUp);
   };
 
   mapWindow.addEventListener('mousemove', onMouseMove);
-  mapWindow.addEventListener('mouseup', onMouseUp);
   document.addEventListener('mouseup', onMouseUp);
-
 });
 
 // Начинаем валидацию формы
