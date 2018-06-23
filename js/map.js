@@ -53,7 +53,9 @@ var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 var MAIN_PIN_HEIGHT = 65;
 var MAIN_PIN_WIDTH = 65;
-
+var MAIN_PIN_TALE = 21;
+var MAIN_PIN_DEFAULT_LEFT = 570;
+var MAIN_PIN_DEFAULT_TOP = 375;
 
 var ESC_CODE = 27;
 
@@ -84,15 +86,15 @@ var getRandomArrLength = function (arr) {
 
 // Функции для определения положения метки
 var getPinX = function (x, pinWidth) {
-  return x - pinWidth / 2;
+  return x + pinWidth / 2;
 };
 var getPinY = function (y, pinHeight) {
-  return y - pinHeight;
+  return y + pinHeight;
 };
-
 var getCoordsPin = function (x, y, pinWidth, pinHeight) {
   return getPinX(x, pinWidth) + ', ' + getPinY(y, pinHeight);
 };
+
 
 // Функция для генерации массива объектов объявлений
 var createAdList = function (quantity, titles, types, minX, minY, maxX, maxY, minPrice, maxPrice, minRooms, maxRooms, minGuests, maxGuests, minCheck, maxCheck, features, photos, pinWidth, pinHeight) {
@@ -261,25 +263,82 @@ var adForm = document.querySelector('.ad-form');
 var addresInput = adForm.querySelector('#address');
 addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT / 2);
 
+// Функция для проверки активности карты
+var checkMapActive = function () {
+  return !mapWindow.classList.contains('map--faded');
+};
+
 // функция установки главной метки в исходное значение
 var setMainPinDefault = function () {
-  mainPin.style.left = '570';
-  mainPin.style.top = '375';
-  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
+  mainPin.style.left = MAIN_PIN_DEFAULT_LEFT + 'px';
+  mainPin.style.top = MAIN_PIN_DEFAULT_TOP + 'px';
+  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT + MAIN_PIN_TALE);
 };
 
 // Функция для активации карты
 var mapActivate = function () {
   enableForms();
+  addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT + MAIN_PIN_TALE);
   mapWindow.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  setMainPinDefault();
   pinsPlace.appendChild(pinsFragment);
 };
 
+var widthMap = mapWindow.offsetWidth;
+var minLeftPin = 0;
+var maxLeftPin = widthMap - MAIN_PIN_WIDTH;
+var minTopPin = MIN_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
+var maxTopPin = MAX_Y - MAIN_PIN_HEIGHT - MAIN_PIN_TALE;
+var limitMainPinMove = function (left, top) {
+  if ((left < minLeftPin) || (left > maxLeftPin) || (top < minTopPin) || (top > maxTopPin)) {
+    return true;
+  }
+  return false;
+};
 
-mainPin.addEventListener('mouseup', function () {
-  mapActivate();
+mainPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+  var startCoords = {
+    x: evt.pageX,
+    y: evt.pageY
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    var shift = {
+      x: startCoords.x - moveEvt.pageX,
+      y: startCoords.y - moveEvt.pageY
+    };
+
+
+    if (limitMainPinMove(mainPin.offsetLeft - shift.x, mainPin.offsetTop - shift.y)) {
+      return;
+    }
+    startCoords = {
+      x: moveEvt.pageX,
+      y: moveEvt.pageY
+    };
+
+
+    var top = mainPin.offsetTop - shift.y;
+    var left = mainPin.offsetLeft - shift.x;
+    mainPin.style.top = top + 'px';
+    mainPin.style.left = left + 'px';
+
+    addresInput.value = getCoordsPin(mainPin.offsetLeft, mainPin.offsetTop, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT + MAIN_PIN_TALE);
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    if (!checkMapActive()) {
+      mapActivate();
+    }
+    mapWindow.removeEventListener('mousemove', onMouseMove);
+    mapWindow.removeEventListener('mouseup', onMouseUp);
+  };
+
+  mapWindow.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
 
 // Начинаем валидацию формы
