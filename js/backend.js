@@ -32,7 +32,7 @@
       var URL = 'https://js.dump.academy/keksobooking/data';
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
-      xhr.timeout = 10000;
+      xhr.timeout = 1;
       listenRequest(xhr, onLoad, onError, null);
       xhr.open('GET', URL);
       xhr.send();

@@ -1238,17 +1238,19 @@ fieldset {
   background-color: rgba(255, 86, 53, 0.9);
 }
 
-.error__message,
-.error__title {
+.error__message {
   position: relative;
-  //max-width: 550px;
 
   color: #ffffff;
   font-size: 50px;
   font-weight: 700;
 }
 
-.error__title::before {
+.error__message span {
+  display: block;
+}
+
+.error__message::before {
   content: "";
   position: absolute;
 

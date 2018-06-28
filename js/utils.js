@@ -41,9 +41,17 @@
     },
     onError: function (error) {
       var errorWindow = document.querySelector('.error');
-      var errorText = document.querySelector('.error__message');
+      var errorText = document.querySelector('.error__message span');
       errorText.textContent = error;
       errorWindow.classList.remove('hidden');
+      errorWindow.addEventListener('click', function () {
+        errorWindow.classList.add('hidden');
+      });
+      document.addEventListener('keydown', function (evt) {
+        if (evt.keyCode === window.utils.ESC_CODE && !(errorWindow.classList.contains('hidden'))) {
+          errorWindow.classList.add('hidden');
+        }
+      });
       setTimeout(function () {
         errorWindow.classList.add('hidden');
       }, 4000);
