@@ -1,5 +1,7 @@
 'use strict';
 (function () {
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
   // Находим место для вставки карточки и шаблон
   var map = document.querySelector('.map');
   var cardPlace = document.querySelector('.map__filters-container');
@@ -73,10 +75,10 @@
     .querySelector('.map__pin');
 
   // Функция для отрисовки пина
-  var renderPin = function (pin) {
+  window.renderPin = function (pin) {
     var pinElement = pinTemplate.cloneNode(true);
     var pinAvatar = pinElement.querySelector('img');
-    pinElement.style = 'left: ' + (pin.location.x - window.data.PIN_WIDTH / 2) + 'px; top: ' + (pin.location.y - window.data.PIN_HEIGHT) + 'px;';
+    pinElement.style = 'left: ' + (pin.location.x - PIN_WIDTH / 2) + 'px; top: ' + (pin.location.y - PIN_HEIGHT) + 'px;';
     pinAvatar.src = pin.author.avatar;
     pinAvatar.alt = pin.offer.title;
     pinElement.addEventListener('click', function () {
@@ -85,14 +87,5 @@
     });
     return pinElement;
   };
-
-  window.backend.load(function (pins) {
-    window.pinsFragment = document.createDocumentFragment();
-    // Создаем фрагмент, добавляем в него пины
-    for (var i = 0; i < pins.length; i++) {
-      var pin = renderPin(pins[i]);
-      window.pinsFragment.appendChild(pin);
-    }
-  }, window.utils.onError);
 })();
 
