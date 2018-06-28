@@ -39,6 +39,22 @@
         list.removeChild(list.firstChild);
       }
     },
+    onError: function (error) {
+      var errorWindow = document.querySelector('.error');
+      var errorText = document.querySelector('.error__message');
+      errorText.textContent = error;
+      errorWindow.classList.remove('hidden');
+      setTimeout(function () {
+        errorWindow.classList.add('hidden');
+      }, 4000);
+    },
+    onSubmit: function () {
+      var successWindow = document.querySelector('.success');
+      successWindow.classList.remove('hidden');
+      setTimeout(function () {
+        successWindow.classList.add('hidden');
+      }, 4000);
+    },
     ESC_CODE: 27,
     MAIN_PIN_HEIGHT: 65,
     MAIN_PIN_WIDTH: 65,
