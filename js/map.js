@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var pinsPlace = document.querySelector('.map__pins');
   var formFields = document.querySelectorAll('fieldset');
   var filterSelects = document.querySelectorAll('select');
   var disableForms = function () {
@@ -37,14 +36,25 @@
     window.selectors.addresInput.value = window.utils.getCoordsPin(window.selectors.mainPin.offsetLeft, window.selectors.mainPin.offsetTop, window.utils.MAIN_PIN_WIDTH, window.utils.MAIN_PIN_HEIGHT + window.utils.MAIN_PIN_TALE);
     mapWindow.classList.remove('map--faded');
     window.selectors.adForm.classList.remove('ad-form--disabled');
-    pinsPlace.appendChild(window.pinsFragment);
-  };
+    window.backend.load(function (pins) {
+      // Создаем фрагмент, добавляем в него пины
+      var pinsFragment = document.createDocumentFragment();
+      for (var i = 0; i < pins.length; i++) {
+        var pin = window.renderPin(pins[i]);
+        pinsFragment.appendChild(pin);
+      }
+      var pinsPlace = document.querySelector('.map__pins');
+      pinsPlace.appendChild(pinsFragment);
+    }, window.utils.onError);
 
+  };
+  var MIN_Y = 130;
+  var MAX_Y = 630;
   var limits = {
     left: 0,
     right: mapWindow.offsetWidth - window.utils.MAIN_PIN_WIDTH,
-    top: 130 - window.utils.MAIN_PIN_HEIGHT - window.utils.MAIN_PIN_TALE,
-    bottom: 630 - window.utils.MAIN_PIN_HEIGHT - window.utils.MAIN_PIN_TALE
+    top: MIN_Y - window.utils.MAIN_PIN_HEIGHT - window.utils.MAIN_PIN_TALE,
+    bottom: MAX_Y - window.utils.MAIN_PIN_HEIGHT - window.utils.MAIN_PIN_TALE
   };
   var limitMainPinMove = function (left, top) {
     return (left < limits.left) || (left > limits.right) || (top < limits.top) || (top > limits.bottom);
