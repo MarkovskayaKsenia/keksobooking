@@ -28,6 +28,7 @@
     cardElement.querySelector('.popup__text--price').textContent = card.offer.price;
     cardElement.querySelector('.popup__text--price').insertAdjacentHTML('beforeend', '&#x20bd;<span>/ночь</span>');
     cardElement.querySelector('.popup__type').textContent = localizeType(card.offer.type);
+    cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнат для ' + card.offer.guests + ' гостей';
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
 
     var featureList = cardElement.querySelector('.popup__features');
@@ -88,7 +89,7 @@
     return pinElement;
   };
   window.render = function (pins) {
-    var PIN_NUMBER = 5;
+    var PIN_NUMBER = 10;
     var takeNumber = pins.length > PIN_NUMBER ? PIN_NUMBER : pins.length;
     var pinsFragment = document.createDocumentFragment();
     for (var i = 0; i < takeNumber; i++) {

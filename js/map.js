@@ -36,10 +36,7 @@
     window.selectors.addresInput.value = window.utils.getCoordsPin(window.selectors.mainPin.offsetLeft, window.selectors.mainPin.offsetTop, window.utils.MAIN_PIN_WIDTH, window.utils.MAIN_PIN_HEIGHT + window.utils.MAIN_PIN_TALE);
     mapWindow.classList.remove('map--faded');
     window.selectors.adForm.classList.remove('ad-form--disabled');
-    window.backend.load(function (pins) {
-      window.render(pins);
-    }, window.utils.onError);
-
+    window.backend.load(window.onSuccess, window.utils.onError);
   };
   var MIN_Y = 130;
   var MAX_Y = 630;
