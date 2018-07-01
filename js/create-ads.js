@@ -75,7 +75,7 @@
     .querySelector('.map__pin');
 
   // Функция для отрисовки пина
-  window.renderPin = function (pin) {
+  var renderPin = function (pin) {
     var pinElement = pinTemplate.cloneNode(true);
     var pinAvatar = pinElement.querySelector('img');
     pinElement.style = 'left: ' + (pin.location.x - PIN_WIDTH / 2) + 'px; top: ' + (pin.location.y - PIN_HEIGHT) + 'px;';
@@ -86,6 +86,17 @@
       map.insertBefore(renderCard(pin), cardPlace);
     });
     return pinElement;
+  };
+  window.render = function (pins) {
+    var PIN_NUMBER = 5;
+    var takeNumber = pins.length > PIN_NUMBER ? PIN_NUMBER : pins.length;
+    var pinsFragment = document.createDocumentFragment();
+    for (var i = 0; i < takeNumber; i++) {
+      var pin = renderPin(pins[i]);
+      pinsFragment.appendChild(pin);
+    }
+    var pinsPlace = document.querySelector('.map__pins');
+    pinsPlace.appendChild(pinsFragment);
   };
 })();
 

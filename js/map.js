@@ -37,14 +37,7 @@
     mapWindow.classList.remove('map--faded');
     window.selectors.adForm.classList.remove('ad-form--disabled');
     window.backend.load(function (pins) {
-      // Создаем фрагмент, добавляем в него пины
-      var pinsFragment = document.createDocumentFragment();
-      for (var i = 0; i < pins.length; i++) {
-        var pin = window.renderPin(pins[i]);
-        pinsFragment.appendChild(pin);
-      }
-      var pinsPlace = document.querySelector('.map__pins');
-      pinsPlace.appendChild(pinsFragment);
+      window.render(pins);
     }, window.utils.onError);
 
   };
