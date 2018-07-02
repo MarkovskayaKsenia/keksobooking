@@ -89,7 +89,7 @@
     return pinElement;
   };
   window.render = function (pins) {
-    var PIN_NUMBER = 10;
+    var PIN_NUMBER = 5;
     var takeNumber = pins.length > PIN_NUMBER ? PIN_NUMBER : pins.length;
     var pinsFragment = document.createDocumentFragment();
     for (var i = 0; i < takeNumber; i++) {

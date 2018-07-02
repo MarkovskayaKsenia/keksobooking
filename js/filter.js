@@ -26,7 +26,6 @@
 
   var getRank = function (pin) {
     var rank = 0;
-
     if (filterType.value !== pin.offer.type && filterType.value !== 'any') {
       rank -= 1;
     }
@@ -39,26 +38,33 @@
     if (filterGuests.value !== pin.offer.guests.toString() && filterGuests.value !== 'any') {
       rank -= 1;
     }
-
-    // var getFeaturesRank = function () {
-    //   var checkedFeatures = [];
-    //   for (var i = 0; i < filterFeaturesCheckboxes.length; i++) {
-    //     if (filterFeaturesCheckboxes[i].checked === true) {
-    //       checkedFeatures.push(filterFeaturesCheckboxes[i].value);
-    //     }
-    //   }
-    //   дописать проверку на наличие массива чекбоксов и pin.offer.features
-    //   for (var j = 0; j < checkedFeatures.length; j++) {
-    //     var checkRank = 0;
-    //     if (checkedFeatures[i].indexOf(pin.offer.features) === -1) {
-    //       console.log(checkedFeatures[i].indexOf(pin.offer.features))
-    //       checkRank = -1;
-    //     }
-    //   }
-    //   return checkRank < 0 ? -1 : 0;
-    // };
-    // rank -= getFeaturesRank();
+    var getCheckedFeatures = function () {
+      var checked = [];
+      for (var i = 0; i < filterFeaturesCheckboxes.length; i++) {
+        if (filterFeaturesCheckboxes[i].checked === true) {
+          checked.push(filterFeaturesCheckboxes[i].value);
+        }
+      }
+      return checked;
+    };
+    var checkedFeatures = getCheckedFeatures();
+    var getFeaturesRank = function (checked, features) {
+      var checkRank = 0;
+      for (var i = 0; i < checked.length; i++) {
+        if (features.indexOf(checked[i]) === -1) {
+          checkRank -= 1;
+        }
+      }
+      return checkRank < 0 ? -1 : 0;
+    };
+    rank += getFeaturesRank(checkedFeatures, pin.offer.features);
     return rank;
+  };
+  var clearPins = function () {
+    var currentPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < currentPins.length; i++) {
+      currentPins[i].remove();
+    }
   };
   var updatePins = function () {
     clearPins();
@@ -70,32 +76,22 @@
     }
     window.render(filteredPins);
   };
-  var clearPins = function () {
-    var currentPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < currentPins.length; i++) {
-      currentPins[i].remove();
-    }
-  };
 
   filterType.addEventListener('change', function () {
-    updatePins();
+    window.debounce(updatePins);
   });
-
   filterPrice.addEventListener('change', function () {
-    updatePins();
+    window.debounce(updatePins);
   });
-
   filterRooms.addEventListener('change', function () {
-    updatePins();
+    window.debounce(updatePins);
   });
-
   filterGuests.addEventListener('change', function () {
-    updatePins();
+    window.debounce(updatePins);
   });
-  // filterFeatures.addEventListener('click', function (evt) {
-  //   if (evt.target.classList.contains('map__checkbox')) {
-  //     updatePins();
-  //   }
-  // });
-
+  filterFeatures.addEventListener('click', function (evt) {
+    if (evt.target.classList.contains('map__checkbox')) {
+      window.debounce(updatePins);
+    }
+  });
 })();
