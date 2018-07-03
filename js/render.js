@@ -2,6 +2,7 @@
 (function () {
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
+  var PIN_NUMBER = 5;
   // Находим место для вставки карточки и шаблон
   var map = document.querySelector('.map');
   var cardPlace = document.querySelector('.map__filters-container');
@@ -28,6 +29,7 @@
     cardElement.querySelector('.popup__text--price').textContent = card.offer.price;
     cardElement.querySelector('.popup__text--price').insertAdjacentHTML('beforeend', '&#x20bd;<span>/ночь</span>');
     cardElement.querySelector('.popup__type').textContent = localizeType(card.offer.type);
+    cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнат для ' + card.offer.guests + ' гостей';
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
 
     var featureList = cardElement.querySelector('.popup__features');
@@ -75,7 +77,7 @@
     .querySelector('.map__pin');
 
   // Функция для отрисовки пина
-  window.renderPin = function (pin) {
+  var renderPin = function (pin) {
     var pinElement = pinTemplate.cloneNode(true);
     var pinAvatar = pinElement.querySelector('img');
     pinElement.style = 'left: ' + (pin.location.x - PIN_WIDTH / 2) + 'px; top: ' + (pin.location.y - PIN_HEIGHT) + 'px;';
@@ -86,6 +88,16 @@
       map.insertBefore(renderCard(pin), cardPlace);
     });
     return pinElement;
+  };
+  window.render = function (pins) {
+    var takeNumber = pins.length > PIN_NUMBER ? PIN_NUMBER : pins.length;
+    var pinsFragment = document.createDocumentFragment();
+    for (var i = 0; i < takeNumber; i++) {
+      var pin = renderPin(pins[i]);
+      pinsFragment.appendChild(pin);
+    }
+    var pinsPlace = document.querySelector('.map__pins');
+    pinsPlace.appendChild(pinsFragment);
   };
 })();
 
