@@ -18,7 +18,7 @@
   var filterRooms = filterForm.querySelector('#housing-rooms');
   var filterGuests = filterForm.querySelector('#housing-guests');
   var filterFeatures = filterForm.querySelector('#housing-features');
-  var checkboxes = filterFeatures.querySelectorAll('.map__checkbox');
+  var filterCheckboxes = filterFeatures.querySelectorAll('.map__checkbox');
 
   var filterOnType = function (item) {
     if (filterType.value === 'any') {
@@ -52,8 +52,8 @@
     return item.offer.guests.toString() === filterGuests.value;
   };
   var filterOnFeatures = function (item) {
-    for (var i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i].checked && item.offer.features.indexOf(checkboxes[i].value) === -1) {
+    for (var i = 0; i < filterCheckboxes.length; i++) {
+      if (filterCheckboxes[i].checked && item.offer.features.indexOf(filterCheckboxes[i].value) === -1) {
         return false;
       }
     }

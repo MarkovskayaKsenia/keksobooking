@@ -28,7 +28,7 @@
 
   // Переменные для активации карты
   var mapWindow = document.querySelector('.map');
-  window.selectors.addresInput.value = window.utils.getCoordsPin(window.selectors.mainPin.offsetLeft, window.selectors.mainPin.offsetTop, window.utils.MAIN_PIN_WIDTH, window.utils.MAIN_PIN_HEIGHT / 2);
+  window.selectors.addressInput.value = window.utils.getCoordsPin(window.selectors.mainPin.offsetLeft, window.selectors.mainPin.offsetTop, window.utils.MAIN_PIN_WIDTH, window.utils.MAIN_PIN_HEIGHT / 2);
 
   // Функция для проверки активности карты
   var checkMapActive = function () {
@@ -38,7 +38,7 @@
   // Функция для активации карты
   var mapActivate = function () {
     enableForms();
-    window.selectors.addresInput.value = window.utils.getCoordsPin(window.selectors.mainPin.offsetLeft, window.selectors.mainPin.offsetTop, window.utils.MAIN_PIN_WIDTH, window.utils.MAIN_PIN_HEIGHT + window.utils.MAIN_PIN_TALE);
+    window.selectors.addressInput.value = window.utils.getCoordsPin(window.selectors.mainPin.offsetLeft, window.selectors.mainPin.offsetTop, window.utils.MAIN_PIN_WIDTH, window.utils.MAIN_PIN_HEIGHT + window.utils.MAIN_PIN_TALE);
     mapWindow.classList.remove('map--faded');
     window.selectors.adForm.classList.remove('ad-form--disabled');
     window.backend.load(window.onSuccess, window.utils.onError);
