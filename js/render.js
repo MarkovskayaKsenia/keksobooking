@@ -2,6 +2,7 @@
 (function () {
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
+  var PIN_NUMBER = 5;
   // Находим место для вставки карточки и шаблон
   var map = document.querySelector('.map');
   var cardPlace = document.querySelector('.map__filters-container');
@@ -89,7 +90,6 @@
     return pinElement;
   };
   window.render = function (pins) {
-    var PIN_NUMBER = 5;
     var takeNumber = pins.length > PIN_NUMBER ? PIN_NUMBER : pins.length;
     var pinsFragment = document.createDocumentFragment();
     for (var i = 0; i < takeNumber; i++) {

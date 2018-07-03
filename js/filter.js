@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var priceRank = {
+    MIN: 0,
+    LOW: 10000,
+    MIDDLE: 50000
+  };
   var pins = [];
 
   window.onSuccess = function (data) {
@@ -9,16 +14,18 @@
   };
 
   var filterForm = document.querySelector('.map__filters');
+  var filters = filterForm.querySelectorAll('.map__filter');
   var filterType = filterForm.querySelector('#housing-type');
   var filterPrice = filterForm.querySelector('#housing-price');
   var filterRooms = filterForm.querySelector('#housing-rooms');
   var filterGuests = filterForm.querySelector('#housing-guests');
   var filterFeatures = filterForm.querySelector('#housing-features');
-  var filterFeaturesCheckboxes = filterFeatures.querySelectorAll('.map__checkbox');
+  var checkboxes = filterFeatures.querySelectorAll('.map__checkbox');
+
   var getPriceCategory = function (val) {
-    if (val >= 0 && val < 10000) {
+    if (val >= priceRank.MIN && val < priceRank.LOW) {
       return 'low';
-    } else if (val >= 10000 && val < 50000) {
+    } else if (val >= priceRank.LOW && val < priceRank.MIDDLE) {
       return 'middle';
     }
     return 'high';
@@ -40,9 +47,9 @@
     }
     var getCheckedFeatures = function () {
       var checked = [];
-      for (var i = 0; i < filterFeaturesCheckboxes.length; i++) {
-        if (filterFeaturesCheckboxes[i].checked === true) {
-          checked.push(filterFeaturesCheckboxes[i].value);
+      for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked === true) {
+          checked.push(checkboxes[i].value);
         }
       }
       return checked;
@@ -68,30 +75,21 @@
   };
   var updatePins = function () {
     clearPins();
-    var filteredPins = [];
-    for (var i = 0; i < pins.length; i++) {
-      if (getRank(pins[i]) === 0) {
-        filteredPins.push(pins[i]);
-      }
-    }
+    var filteredPins = pins.filter(function (elem) {
+      return getRank(elem) === 0;
+    });
     window.render(filteredPins);
   };
 
-  filterType.addEventListener('change', function () {
-    window.debounce(updatePins);
-  });
-  filterPrice.addEventListener('change', function () {
-    window.debounce(updatePins);
-  });
-  filterRooms.addEventListener('change', function () {
-    window.debounce(updatePins);
-  });
-  filterGuests.addEventListener('change', function () {
-    window.debounce(updatePins);
-  });
-  filterFeatures.addEventListener('click', function (evt) {
-    if (evt.target.classList.contains('map__checkbox')) {
+  filters.forEach(function (elem) {
+    elem.addEventListener('change', function () {
       window.debounce(updatePins);
-    }
+    });
+  });
+
+  checkboxes.forEach(function (elem) {
+    elem.addEventListener('click', function () {
+      window.debounce(updatePins);
+    });
   });
 })();

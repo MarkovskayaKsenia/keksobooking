@@ -2,6 +2,12 @@
 
 (function () {
   window.utils = {
+    ESC_CODE: 27,
+    MAIN_PIN_HEIGHT: 65,
+    MAIN_PIN_WIDTH: 65,
+    MAIN_PIN_TALE: 21,
+    MAIN_PIN_DEFAULT_LEFT: 570,
+    MAIN_PIN_DEFAULT_TOP: 375,
     // Функции для определения положения метки
     getPinX: function (x, pinWidth) {
       return x + pinWidth / 2;
@@ -41,12 +47,6 @@
       setTimeout(function () {
         successWindow.classList.add('hidden');
       }, 4000);
-    },
-    ESC_CODE: 27,
-    MAIN_PIN_HEIGHT: 65,
-    MAIN_PIN_WIDTH: 65,
-    MAIN_PIN_TALE: 21,
-    MAIN_PIN_DEFAULT_LEFT: 570,
-    MAIN_PIN_DEFAULT_TOP: 375
+    }
   };
 })();

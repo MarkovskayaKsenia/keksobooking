@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var yCoords = {
+    MIN: 130,
+    MAX: 630
+  };
+
   var formFields = document.querySelectorAll('fieldset');
   var filterSelects = document.querySelectorAll('select');
   var disableForms = function () {
@@ -38,13 +43,12 @@
     window.selectors.adForm.classList.remove('ad-form--disabled');
     window.backend.load(window.onSuccess, window.utils.onError);
   };
-  var MIN_Y = 130;
-  var MAX_Y = 630;
+
   var limits = {
     left: 0,
     right: mapWindow.offsetWidth - window.utils.MAIN_PIN_WIDTH,
-    top: MIN_Y - window.utils.MAIN_PIN_HEIGHT - window.utils.MAIN_PIN_TALE,
-    bottom: MAX_Y - window.utils.MAIN_PIN_HEIGHT - window.utils.MAIN_PIN_TALE
+    top: yCoords.MIN - window.utils.MAIN_PIN_HEIGHT - window.utils.MAIN_PIN_TALE,
+    bottom: yCoords.MAX - window.utils.MAIN_PIN_HEIGHT - window.utils.MAIN_PIN_TALE
   };
   var limitMainPinMove = function (left, top) {
     return (left < limits.left) || (left > limits.right) || (top < limits.top) || (top > limits.bottom);
@@ -72,7 +76,6 @@
         x: moveEvt.pageX,
         y: moveEvt.pageY
       };
-
 
       var top = window.selectors.mainPin.offsetTop - shift.y;
       var left = window.selectors.mainPin.offsetLeft - shift.x;
