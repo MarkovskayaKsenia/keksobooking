@@ -68,7 +68,6 @@
         y: startCoords.y - moveEvt.pageY
       };
 
-
       if (limitMainPinMove(window.selectors.mainPin.offsetLeft - shift.x, window.selectors.mainPin.offsetTop - shift.y)) {
         return;
       }
@@ -82,7 +81,7 @@
       window.selectors.mainPin.style.top = top + 'px';
       window.selectors.mainPin.style.left = left + 'px';
 
-      window.selectors.addresInput.value = window.utils.getCoordsPin(window.selectors.mainPin.offsetLeft, window.selectors.mainPin.offsetTop, window.utils.MAIN_PIN_WIDTH, window.utils.MAIN_PIN_HEIGHT + window.utils.MAIN_PIN_TALE);
+      window.selectors.addressInput.value = window.utils.getCoordsPin(window.selectors.mainPin.offsetLeft, window.selectors.mainPin.offsetTop, window.utils.MAIN_PIN_WIDTH, window.utils.MAIN_PIN_HEIGHT + window.utils.MAIN_PIN_TALE);
     };
 
     var onMouseUp = function (upEvt) {

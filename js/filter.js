@@ -2,7 +2,6 @@
 
 (function () {
   var priceRank = {
-    MIN: 0,
     LOW: 10000,
     MIDDLE: 50000
   };
@@ -14,7 +13,6 @@
   };
 
   var filterForm = document.querySelector('.map__filters');
-  var filters = filterForm.querySelectorAll('.map__filter');
   var filterType = filterForm.querySelector('#housing-type');
   var filterPrice = filterForm.querySelector('#housing-price');
   var filterRooms = filterForm.querySelector('#housing-rooms');
@@ -22,50 +20,44 @@
   var filterFeatures = filterForm.querySelector('#housing-features');
   var checkboxes = filterFeatures.querySelectorAll('.map__checkbox');
 
-  var getPriceCategory = function (val) {
-    if (val >= priceRank.MIN && val < priceRank.LOW) {
-      return 'low';
-    } else if (val >= priceRank.LOW && val < priceRank.MIDDLE) {
-      return 'middle';
+  var filterOnType = function (item) {
+    if (filterType.value === 'any') {
+      return true;
     }
-    return 'high';
+    return item.offer.type === filterType.value;
   };
+  var filterOnPrice = function (item) {
+    switch (filterPrice.value) {
+      case 'low':
+        return item.offer.price < priceRank.LOW;
+      case 'middle':
+        return item.offer.price >= priceRank.LOW && item.offer.price < priceRank.MIDDLE;
+      case 'high':
+        return item.offer.price >= priceRank.MIDDLE;
+      default:
+        return true;
+    }
 
-  var getRank = function (pin) {
-    var rank = 0;
-    if (filterType.value !== pin.offer.type && filterType.value !== 'any') {
-      rank -= 1;
+  };
+  var filterOnRooms = function (item) {
+    if (filterRooms.value === 'any') {
+      return true;
     }
-    if (filterPrice.value !== getPriceCategory(pin.offer.price) && filterPrice.value !== 'any') {
-      rank -= 1;
+    return item.offer.rooms.toString() === filterRooms.value;
+  };
+  var filterOnGuests = function (item) {
+    if (filterGuests.value === 'any') {
+      return true;
     }
-    if (filterRooms.value !== pin.offer.rooms.toString() && filterRooms.value !== 'any') {
-      rank -= 1;
-    }
-    if (filterGuests.value !== pin.offer.guests.toString() && filterGuests.value !== 'any') {
-      rank -= 1;
-    }
-    var getCheckedFeatures = function () {
-      var checked = [];
-      for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked === true) {
-          checked.push(checkboxes[i].value);
-        }
+    return item.offer.guests.toString() === filterGuests.value;
+  };
+  var filterOnFeatures = function (item) {
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked && item.offer.features.indexOf(checkboxes[i].value) === -1) {
+        return false;
       }
-      return checked;
-    };
-    var checkedFeatures = getCheckedFeatures();
-    var getFeaturesRank = function (checked, features) {
-      var checkRank = 0;
-      for (var i = 0; i < checked.length; i++) {
-        if (features.indexOf(checked[i]) === -1) {
-          checkRank -= 1;
-        }
-      }
-      return checkRank < 0 ? -1 : 0;
-    };
-    rank += getFeaturesRank(checkedFeatures, pin.offer.features);
-    return rank;
+    }
+    return true;
   };
   var clearPins = function () {
     var currentPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -75,21 +67,16 @@
   };
   var updatePins = function () {
     clearPins();
-    var filteredPins = pins.filter(function (elem) {
-      return getRank(elem) === 0;
-    });
+    var filteredPins = pins
+      .filter(filterOnType)
+      .filter(filterOnPrice)
+      .filter(filterOnRooms)
+      .filter(filterOnGuests)
+      .filter(filterOnFeatures);
     window.render(filteredPins);
   };
 
-  filters.forEach(function (elem) {
-    elem.addEventListener('change', function () {
-      window.debounce(updatePins);
-    });
-  });
-
-  checkboxes.forEach(function (elem) {
-    elem.addEventListener('click', function () {
-      window.debounce(updatePins);
-    });
+  filterForm.addEventListener('change', function () {
+    window.debounce(updatePins);
   });
 })();
