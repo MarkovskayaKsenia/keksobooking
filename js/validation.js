@@ -1,12 +1,12 @@
 'use strict';
 
 (function () {
-  var typeSelect = window.selectors.adForm.querySelector('#type');
-  var priceInput = window.selectors.adForm.querySelector('#price');
-  var timeInSelect = window.selectors.adForm.querySelector('#timein');
-  var timeOutSelect = window.selectors.adForm.querySelector('#timeout');
-  var roomsSelect = window.selectors.adForm.querySelector('#room_number');
-  var capacitySelect = window.selectors.adForm.querySelector('#capacity');
+  var typeSelect = document.querySelector('#type');
+  var priceInput = document.querySelector('#price');
+  var timeInSelect = document.querySelector('#timein');
+  var timeOutSelect = document.querySelector('#timeout');
+  var roomsSelect = document.querySelector('#room_number');
+  var capacitySelect = document.querySelector('#capacity');
 
   // Функция выбора ценового диапазона
   var choosePrice = function (val) {
@@ -79,16 +79,4 @@
   roomsSelect.addEventListener('change', function (evt) {
     roomsMatch(evt.target.value);
   });
-  window.selectors.adForm.addEventListener('reset', function () {
-    window.mapDeactivate();
-  });
-  window.selectors.adForm.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    window.backend.save(new FormData(window.selectors.adForm), function () {
-      window.utils.onSubmit();
-      window.mapDeactivate();
-    }, window.utils.onError);
-  });
 })();
-
-

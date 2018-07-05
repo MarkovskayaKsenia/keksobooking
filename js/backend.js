@@ -1,12 +1,9 @@
 'use strict';
 (function () {
-  var listenRequest = function (xhr, onLoad, onError, reaction) {
+  var listenRequest = function (xhr, onLoad, onError) {
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
         onLoad(xhr.response);
-        if (reaction) {
-          reaction();
-        }
       } else {
         onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
@@ -27,7 +24,7 @@
 
       xhr.responseType = 'json';
       xhr.timeout = 10000;
-      listenRequest(xhr, onLoad, onError, window.utils.onSubmit);
+      listenRequest(xhr, onLoad, onError);
       xhr.open('POST', URL);
       xhr.send(data);
     },
@@ -38,7 +35,7 @@
 
       xhr.responseType = 'json';
       xhr.timeout = 10000;
-      listenRequest(xhr, onLoad, onError, null);
+      listenRequest(xhr, onLoad, onError);
       xhr.open('GET', URL);
       xhr.send();
     }
