@@ -26,6 +26,7 @@
     }
     return item.offer.type === filterType.value;
   };
+
   var filterOnPrice = function (item) {
     switch (filterPrice.value) {
       case 'low':
@@ -39,18 +40,21 @@
     }
 
   };
+
   var filterOnRooms = function (item) {
     if (filterRooms.value === 'any') {
       return true;
     }
     return item.offer.rooms.toString() === filterRooms.value;
   };
+
   var filterOnGuests = function (item) {
     if (filterGuests.value === 'any') {
       return true;
     }
     return item.offer.guests.toString() === filterGuests.value;
   };
+
   var filterOnFeatures = function (item) {
     for (var i = 0; i < filterCheckboxes.length; i++) {
       if (filterCheckboxes[i].checked && item.offer.features.indexOf(filterCheckboxes[i].value) === -1) {
@@ -59,14 +63,10 @@
     }
     return true;
   };
-  var clearPins = function () {
-    var currentPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < currentPins.length; i++) {
-      currentPins[i].remove();
-    }
-  };
+
   var updatePins = function () {
-    clearPins();
+    window.utils.clearPins();
+    window.utils.closeCard();
     var filteredPins = pins
       .filter(filterOnType)
       .filter(filterOnPrice)

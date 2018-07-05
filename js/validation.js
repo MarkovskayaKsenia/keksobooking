@@ -66,11 +66,6 @@
         break;
     }
   };
-  var setMainPinDefault = function () {
-    window.selectors.mainPin.style.left = window.utils.MAIN_PIN_DEFAULT_LEFT + 'px';
-    window.selectors.mainPin.style.top = window.utils.MAIN_PIN_DEFAULT_TOP + 'px';
-    window.selectors.addressInput.value = window.utils.getCoordsPin(window.selectors.mainPin.offsetLeft, window.selectors.mainPin.offsetTop, window.utils.MAIN_PIN_WIDTH, window.utils.MAIN_PIN_HEIGHT + window.utils.MAIN_PIN_TALE);
-  };
 
   typeSelect.addEventListener('change', function (evt) {
     choosePrice(evt.target.value);
@@ -85,13 +80,13 @@
     roomsMatch(evt.target.value);
   });
   window.selectors.adForm.addEventListener('reset', function () {
-    setTimeout(setMainPinDefault, 50);
+    window.mapDeactivate();
   });
-
   window.selectors.adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(window.selectors.adForm), function () {
-      window.selectors.adForm.reset();
+      window.utils.onSubmit();
+      window.mapDeactivate();
     }, window.utils.onError);
   });
 })();

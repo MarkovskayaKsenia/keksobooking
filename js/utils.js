@@ -3,11 +3,6 @@
 (function () {
   window.utils = {
     ESC_CODE: 27,
-    MAIN_PIN_HEIGHT: 65,
-    MAIN_PIN_WIDTH: 65,
-    MAIN_PIN_TALE: 21,
-    MAIN_PIN_DEFAULT_LEFT: 570,
-    MAIN_PIN_DEFAULT_TOP: 375,
     // Функции для определения положения метки
     getPinX: function (x, pinWidth) {
       return x + pinWidth / 2;
@@ -24,28 +19,57 @@
         list.removeChild(list.firstChild);
       }
     },
+    // Функция для очистки пинов с карты
+    clearPins: function () {
+      var currentPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+      for (var i = 0; i < currentPins.length; i++) {
+        currentPins[i].remove();
+      }
+    },
+    // Функция для закрытия карточки объявления
+    closeCard: function () {
+      var card = document.querySelector('.map__card');
+      if (card) {
+        card.remove();
+      }
+    },
+    // Сообщения об ошибке и отправке формы
     onError: function (error) {
       var errorWindow = document.querySelector('.error');
       var errorText = document.querySelector('.error__message span');
+
       errorText.textContent = error;
       errorWindow.classList.remove('hidden');
+
       errorWindow.addEventListener('click', function () {
         errorWindow.classList.add('hidden');
       });
-      document.addEventListener('keydown', function (evt) {
+      errorWindow.addEventListener('keydown', function (evt) {
         if (evt.keyCode === window.utils.ESC_CODE && !(errorWindow.classList.contains('hidden'))) {
           errorWindow.classList.add('hidden');
         }
       });
+
       setTimeout(function () {
-        errorWindow.classList.add('hidden');
+        if (!errorWindow.classList.contains('hidden')) {
+          errorWindow.classList.add('hidden');
+          setTimeout(window.mapDeactivate(), 500);
+        }
       }, 4000);
     },
     onSubmit: function () {
       var successWindow = document.querySelector('.success');
       successWindow.classList.remove('hidden');
-      setTimeout(function () {
+
+      successWindow.addEventListener('click', function () {
         successWindow.classList.add('hidden');
+      });
+
+      setTimeout(function () {
+        if (!successWindow.classList.contains('hidden')) {
+          successWindow.classList.add('hidden');
+        }
       }, 4000);
     }
   };
