@@ -53,22 +53,14 @@
     }
 
     var buttonClose = cardElement.querySelector('.popup__close');
-    buttonClose.addEventListener('click', closeCard);
+    buttonClose.addEventListener('click', window.utils.closeCard);
     map.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.utils.ESC_CODE) {
-        closeCard();
+        window.utils.closeCard();
+        buttonClose.removeEventListener('click', window.utils.closeCard);
       }
     });
-
     return cardElement;
-  };
-
-  // Функция для закрытия карточки объявления
-  var closeCard = function () {
-    var card = document.querySelector('.map__card');
-    if (card) {
-      card.remove();
-    }
   };
 
   // Находим место для вставки пинов и шаблон
@@ -84,7 +76,7 @@
     pinAvatar.src = pin.author.avatar;
     pinAvatar.alt = pin.offer.title;
     pinElement.addEventListener('click', function () {
-      closeCard();
+      window.utils.closeCard();
       map.insertBefore(renderCard(pin), cardPlace);
     });
     return pinElement;

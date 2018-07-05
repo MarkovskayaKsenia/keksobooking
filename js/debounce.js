@@ -8,6 +8,7 @@
     if (lastTimeout) {
       clearTimeout(lastTimeout);
     }
+
     lastTimeout = setTimeout(fun, DEBOUNCE_INTERVAL);
   };
 })();
