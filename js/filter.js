@@ -20,12 +20,8 @@
   var filterCheckboxes = filterFeatures.querySelectorAll('.map__checkbox');
 
   var filterOnType = function (item) {
-    if (filterType.value === 'any') {
-      return true;
-    }
-    return item.offer.type === filterType.value;
+    return filterType.value === 'any' || item.offer.type === filterType.value;
   };
-
   var filterOnPrice = function (item) {
     switch (filterPrice.value) {
       case 'low':
@@ -41,17 +37,11 @@
   };
 
   var filterOnRooms = function (item) {
-    if (filterRooms.value === 'any') {
-      return true;
-    }
-    return item.offer.rooms.toString() === filterRooms.value;
+    return filterRooms.value === 'any' || item.offer.rooms.toString() === filterRooms.value;
   };
 
   var filterOnGuests = function (item) {
-    if (filterGuests.value === 'any') {
-      return true;
-    }
-    return item.offer.guests.toString() === filterGuests.value;
+    return filterGuests.value === 'any' || item.offer.guests.toString() === filterGuests.value;
   };
 
   var filterOnFeatures = function (item) {

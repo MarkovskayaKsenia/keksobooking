@@ -54,7 +54,7 @@
 
     var buttonClose = cardElement.querySelector('.popup__close');
     buttonClose.addEventListener('click', window.utils.closeCard);
-    map.addEventListener('keydown', function (evt) {
+    document.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.utils.ESC_CODE) {
         window.utils.closeCard();
         buttonClose.removeEventListener('click', window.utils.closeCard);
