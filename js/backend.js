@@ -5,7 +5,8 @@
   var currentType = 'json';
   var currentTimeout = 10000;
 
-  var request = function (url, xhr, type, timeout, onLoad, onError, method, data) {
+  var request = function (url, type, timeout, onLoad, onError, method, data) {
+    var xhr = new XMLHttpRequest();
     xhr.responseType = type;
     xhr.timeout = timeout;
 
@@ -35,13 +36,11 @@
 
   window.backend = {
     save: function (data, onLoad, onError) {
-      var xhr = new XMLHttpRequest();
-      request(URL_POST, xhr, currentType, currentTimeout, onLoad, onError, 'POST', data);
+      request(URL_POST, currentType, currentTimeout, onLoad, onError, 'POST', data);
     },
 
     load: function (onLoad, onError) {
-      var xhr = new XMLHttpRequest();
-      request(URL_GET, xhr, currentType, currentTimeout, onLoad, onError, 'GET', null);
+      request(URL_GET, currentType, currentTimeout, onLoad, onError, 'GET', null);
     }
   };
 })();
