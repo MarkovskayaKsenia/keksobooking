@@ -22,6 +22,7 @@
   var filterOnType = function (item) {
     return filterType.value === 'any' || item.offer.type === filterType.value;
   };
+
   var filterOnPrice = function (item) {
     switch (filterPrice.value) {
       case 'low':
@@ -33,7 +34,6 @@
       default:
         return true;
     }
-
   };
 
   var filterOnRooms = function (item) {

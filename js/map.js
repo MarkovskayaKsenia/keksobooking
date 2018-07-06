@@ -18,23 +18,16 @@
   window.filterForm = document.querySelector('.map__filters');
   var filterSelects = window.filterForm.querySelectorAll('select');
 
-  var disableForms = function () {
-    for (var j = 0; j < formFields.length; j++) {
-      formFields[j].setAttribute('disabled', 'true');
-    }
-    for (var k = 0; k < filterSelects.length; k++) {
-      filterSelects[k].setAttribute('disabled', 'true');
-    }
+  var toggleDisableForms = function (status) {
+    formFields.forEach(function (item) {
+      item.disabled = status;
+    });
+    filterSelects.forEach(function (item) {
+      item.disabled = status;
+    });
   };
-  disableForms();
-  var enableForms = function () {
-    for (var j = 0; j < formFields.length; j++) {
-      formFields[j].removeAttribute('disabled');
-    }
-    for (var k = 0; k < filterSelects.length; k++) {
-      filterSelects[k].removeAttribute('disabled');
-    }
-  };
+  toggleDisableForms(true);
+
   var setMainPinDefault = function () {
     mainPin.style.left = mainPinSetup.DEFAULT_LEFT + 'px';
     mainPin.style.top = mainPinSetup.DEFAULT_TOP + 'px';
@@ -56,11 +49,11 @@
     mapWindow.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     window.backend.load(window.onSuccess, window.utils.onError);
-    enableForms();
+    toggleDisableForms(false);
   };
 
   window.mapDeactivate = function () {
-    disableForms();
+    toggleDisableForms(true);
     window.filterForm.reset();
     adForm.reset();
     mapWindow.classList.add('map--faded');
