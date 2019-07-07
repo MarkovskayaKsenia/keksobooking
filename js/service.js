@@ -1,31 +1,41 @@
 'use strict';
-(function(){
+(function () {
+  var ESC_CODE = 27;
   window.service = {
-    // Функция нахождения случайного числа в заданном интервале
-    getRandomFromInterval: function (min, max) {
-      return Math.floor((max + 1 - min) * Math.random() + min);
+    // Проверка на нажатие клавиши ESC
+    isEscKeycode: function (evt) {
+      return evt.keyCode === ESC_CODE;
     },
-    // Функция перемешивания элементов массива в случайном порядке. Исходный массив не меняется.
-    randomizeArrayElements: function (arr) {
-      var newArr = arr.slice(0);
-
-      newArr.sort(function () {
-        return 0.5 - Math.random();
+    onError: function (error) {
+      var errorWindow = document.querySelector('.error');
+      var errorText = document.querySelector('.error__message span');
+      errorText.textContent = error;
+      errorText.style.color = 'red';
+      errorText.style.fontWeight = 'bold';
+      errorText.style.fontSize = '24px';
+      errorWindow.classList.remove('hidden');
+      errorWindow.addEventListener('click', function () {
+        errorWindow.classList.add('hidden');
       });
-      return newArr;
+      document.addEventListener('keydown', function () {
+        if (window.service.isEscKeycode && !(errorWindow.classList.contains('hidden'))) {
+          errorWindow.classList.add('hidden');
+        }
+      });
+      setTimeout(function () {
+        errorWindow.classList.add('hidden');
+      }, 4000);
     },
-    // Функция создания массива случайной длины и случайных значений из элементов другого массива
-    getRandomArrLength: function (arr) {
-      var rezult = [];
-      var newArr = window.service.randomizeArrayElements(arr);
-      var rezultLength = window.service.getRandomFromInterval(0, arr.length - 1);
-      for (var i = 0; i < rezultLength; i++) {
-        rezult[i] = newArr[i];
-      }
-      return rezult;
+    onSubmit: function () {
+      var successWindow = document.querySelector('.success');
+      successWindow.classList.remove('hidden');
+      setTimeout(function() {
+        successWindow.classList.add('hidden');
+      }, 4000);
     },
-
-    ESC_CODE: 27
+    MAIN_PIN_HEIGHT: 65,
+    MAIN_PIN_WIDTH: 65,
+    MAIN_PIN_TALE: 22
   };
 
 })();

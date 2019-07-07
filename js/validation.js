@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+
   var typeSelect = document.querySelector('#type');
   var priceInput = document.querySelector('#price');
   var timeInSelect = document.querySelector('#timein');
@@ -70,12 +71,13 @@
         break;
     }
   };
+
   //функция установки главного пина в исходное положение
   var onResetButtonClick = function () {
-    closeCard();
-    window.selectors.mainPin.style.left = mainPinDefaultX + 'px';
-    window.selectors.mainPin.style.top = mainPinDefaultY + 'px';
-    window.selectors.addressInput.value = getCoordsPin(mainPinDefaultX, mainPinDefaultY, window.data.MAIN_PIN_WIDTH, window.data.MAIN_PIN_HEIGHT + window.data.MAIN_PIN_TALE);
+    window.map.closeCard();
+    window.selectors.mainPin.style.left = window.map.mainPinDefaultX + 'px';
+    window.selectors.mainPin.style.top = window.map.mainPinDefaultY + 'px';
+    window.selectors.addressInput.value = window.map.getCoordsPin(window.map.mainPinDefaultX, window.map.mainPinDefaultY, window.service.MAIN_PIN_WIDTH, window.service.MAIN_PIN_HEIGHT + window.service.MAIN_PIN_TALE);
   };
 
   typeSelect.addEventListener('change', function (evt) {
@@ -92,9 +94,17 @@
 
   timeOutSelect.addEventListener('change', function (evt) {
     timeOutSync(evt.target.value);
+    console.log(evt.target.value);
   });
 
   window.selectors.adForm.addEventListener('reset', function () {
     setTimeout(onResetButtonClick, 50);
+  });
+
+  window.selectors.adForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(window.selectors.adForm), function () {
+      window.selectors.adForm.reset();
+    }, window.service.onError);
   });
 })();
