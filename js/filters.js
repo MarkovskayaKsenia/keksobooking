@@ -1,7 +1,7 @@
 'use strict';
 (function () {
 
-  var MAX_PINS = 5;
+
   var MAX_PRICE = 50000;
   var MIN_PRICE = 10000;
   var pins=[];
@@ -81,14 +81,14 @@
       .filter(filterByRooms)
       .filter(filterByGuests)
       .filter(filterByPrice)
-      .filter(filterByFeatures)
-      .filter(filterByQuantity);
-    window.insertPins(pinsFilter);
+      .filter(filterByFeatures);
+      window.insertPins(pinsFilter);
   };
 
 
-  mapFilters.addEventListener('change',function(){
+  mapFilters.addEventListener('change', function(){
    window.debounce(updatePins());
+
   });
 }());
 

@@ -2,7 +2,9 @@
 (function(){
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
-  var PIN_NUMBER = 5;
+  var MAX_PINS = 5;
+
+
 
   // Находим место для вставки пинов и шаблон
   var mapPins = document.querySelector('.map__pins');
@@ -44,9 +46,9 @@
 
   // Функция вставки пинов на страницу
    window.insertPins =  function (arr) {
-     var pinToShow = arr.length > PIN_NUMBER ? PIN_NUMBER : arr.length;
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < pinToShow; i++) {
+    var pinsCount = arr.length > MAX_PINS ? MAX_PINS : arr.length;
+    for (var i = 0; i < pinsCount; i++) {
       var pinElement = renderPin(arr[i]);
       addClickListener(pinElement, arr[i]);
       fragment.appendChild(pinElement);
